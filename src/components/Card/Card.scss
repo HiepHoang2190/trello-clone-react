@@ -1,7 +1,7 @@
 @import '_setting.scss';
 $card-border-radius:4px;
 
-li.card-item {
+.card-item {
   background-color: white;
   padding: $gap;
   border-radius: $card-border-radius;

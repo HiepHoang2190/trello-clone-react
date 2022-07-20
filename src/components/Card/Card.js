@@ -2,13 +2,13 @@ import React from 'react'
 import './Card.scss'
 
 export default function Card(props) {
-  const {card} = props
+  const { card } = props
   return (
-    <li className="card-item">
+    <div className="card-item">
       {card.cover && (
         <img src={card.cover} className="card-cover" alt="title-image" />
       )}
       Title: {card.title}
-    </li>
+    </div>
   )
 }

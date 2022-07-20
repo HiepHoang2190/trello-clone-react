@@ -17,7 +17,7 @@ $list-bg-color: #ebecf0;
     color: #333;
     padding: 0 8px;
   }
-  header {
+  header.column-drag-handle {
     padding-left: 15px;
     height: $column-header-height;
     line-height: $column-header-height;
@@ -25,6 +25,7 @@ $list-bg-color: #ebecf0;
     font-weight: bold;
     border-top-left-radius:$column-border-radius;
     border-top-right-radius:$column-border-radius;
+    cursor: pointer;
   }
   footer {
     padding-left: 10px;
@@ -33,8 +34,7 @@ $list-bg-color: #ebecf0;
     border-bottom-left-radius:$column-border-radius;
     border-bottom-right-radius:$column-border-radius;
   }
-  ul.card-list {
-    list-style-type: none;
+  .card-list {
     margin: 0;
     max-height: calc(100% - #{$column-header-height} - #{$column-footer-height});
     overflow-y: auto;
@@ -48,6 +48,20 @@ $list-bg-color: #ebecf0;
       background-color: darken($list-bg-color, 15);
       border-right: 5px $list-bg-color solid ;
      }
+    .card-ghost {
+      transition: transform 0.18s ease;
+      transform: rotateZ(5deg)
+    }
+    
+    .card-ghost-drop{
+      transition: transform 0.18s ease-in-out;
+      transform: rotateZ(0deg)
+    }
+    .card-drop-preview {
+      background-color: rgba(150, 150, 200, 0.1);
+      border: 1px dashed #abc;
+      margin: 5px;
+    }
   
   }
 }
