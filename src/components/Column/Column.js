@@ -7,13 +7,18 @@ import Card from 'components/Card/Card'
 import { mapOrder } from 'utilities/sorts'
 
 export default function Column(props) {
-  const { column } = props
+  const { column, onCardDrop } = props
   // sort cards
   const cards = mapOrder(column.cards, column.cardOrder, 'id')
 
-  const onCardDrop = (dropResult) => {
-    console.log(dropResult)
-  }
+  // Chuyển onCarđrop qua BoardContent để set lại column ở board
+  // const onCardDrop = (columnId, dropResult) => {
+
+  //   if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+  //     console.log(columnId)
+  //     console.log(dropResult)
+  //   }
+  // }
   return (
     <div className="column">
       <header className="column-drag-handle">{column.title}</header>
@@ -31,7 +36,7 @@ export default function Column(props) {
           // onDropReady={p => console.log('Drop ready: ', p)}
           orientation="vertical" // default
           groupName="lotusdev-columns"
-          onDrop={onCardDrop}
+          onDrop={dropResult => onCardDrop(column.id, dropResult)}
           getChildPayload={index => cards[index]}
           dragClass="card-ghost"
           dropClass="card-ghost-drop"
@@ -52,7 +57,11 @@ export default function Column(props) {
           })}
         </Container>
       </div>
-      <footer>Add another card</footer>
+      <footer>
+        <div className="footer-actions">
+          <i className="fa fa-plus icon"> Add another card</i>
+        </div>
+      </footer>
     </div>
   )
 }
