@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Container, Draggable } from 'react-smooth-dnd'
-import { Dropdown, Form } from 'react-bootstrap/'
+import { Dropdown, Form, Button } from 'react-bootstrap/'
 import './Column.scss'
 
 import Card from 'components/Card/Card'
@@ -25,6 +25,9 @@ export default function Column(props) {
 
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const toggleShowConfirmModal = () => setShowConfirmModal(!showConfirmModal)
+
+  const [openNewCardForm, setOpenNewCardForm] = useState(false)
+  const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
 
   const [columnTitle, setColumnTitle] = useState('')
   const handleCoumnTitleChange = useCallback((e) => {
@@ -115,11 +118,32 @@ export default function Column(props) {
             )
           })}
         </Container>
+        {openNewCardForm && (
+          <div className="add-new-card-area">
+            <Form.Control
+              size="sm"
+              as="textarea"
+              rows="3"
+              placeholder="Enter column title..."
+              className="textarea-enter-new-card"
+            // ref={newColumnInputRef}
+            // value={newColumnTitle}
+            // onChange={onNewColumnTitleChange}
+            // onKeyDown={event => (event.key === 'Enter') && addNewColumn()}
+            />
+            <Button variant="success" size="sm" >Add column</Button>
+            <span className="cancel-icon" onClick={toggleOpenNewCardForm}><i className="fa fa-trash icon"></i></span>
+          </div>
+        )}
+
       </div>
       <footer>
-        <div className="footer-actions">
-          <i className="fa fa-plus icon"> Add another card</i>
-        </div>
+        {!openNewCardForm && (
+          <div className="footer-actions" onClick={toggleOpenNewCardForm}>
+            <i className="fa fa-plus icon"> Add another card</i>
+          </div>
+        )}
+
       </footer>
 
       <ConfirmModal

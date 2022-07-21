@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Container, Draggable } from 'react-smooth-dnd'
 import { Container as BootstrapContainer, Row, Col, Form, Button } from 'react-bootstrap'
 import { isEmpty } from 'lodash'
@@ -18,9 +18,9 @@ export default function BoardContent() {
   const newColumnInputRef = useRef(null)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const onNewColumnTitleChange = useCallback((e) => (
+  const onNewColumnTitleChange = (e) => (
     setNewColumnTitle(e.target.value)
-  ), [])
+  )
   useEffect(() => {
     const boardFromDB = initialData.boards.find(board => board.id === 'board-1')
     if (boardFromDB) {
@@ -185,8 +185,8 @@ export default function BoardContent() {
                 onChange={onNewColumnTitleChange}
                 onKeyDown={event => (event.key === 'Enter') && addNewColumn()}
               />
-              <Button variant="success" size="sm" onClick={addNewColumn}>Add column</Button>{' '}
-              <span className="cancel-new-column" onClick={toggleOpenNewColumnForm}><i className="fa fa-trash icon"></i></span>
+              <Button variant="success" size="sm" onClick={addNewColumn}>Add column</Button>
+              <span className="cancel-icon" onClick={toggleOpenNewColumnForm}><i className="fa fa-trash icon"></i></span>
             </Col>
           </Row>
         )
