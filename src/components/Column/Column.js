@@ -29,7 +29,8 @@ export default function Column(props) {
           //   console.log('drag leave:', column.id);
           // }}
           // onDropReady={p => console.log('Drop ready: ', p)}
-          groupName="col"
+          orientation="vertical" // default
+          groupName="lotusdev-columns"
           onDrop={onCardDrop}
           getChildPayload={index => cards[index]}
           dragClass="card-ghost"

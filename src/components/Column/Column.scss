@@ -1,17 +1,20 @@
 @import '_setting.scss';
 
-$column-header-height:36px;
-$column-footer-height:36px;
-$column-border-radius:5px;
+$column-header-height: 46px;
+$column-footer-height: 46px;
+$column-border-radius: 5px;
+
 $list-bg-color: #ebecf0;
+$column-height: calc(#{$board-content-height} - #{$gap *2});
 
 .column {
   flex: 0 0 auto;
   width: 300px;
-  height: calc(100% - #{$gap});
-  &:not(:first-child) {
-    margin-left: $gap;
-  }
+  height: $column-height;
+  // &:not(:first-child) {
+  //   margin-left: $gap;
+  // }
+  margin-left: $gap;
   > * {
     background-color: $list-bg-color;
     color: #333;
@@ -36,7 +39,7 @@ $list-bg-color: #ebecf0;
   }
   .card-list {
     margin: 0;
-    max-height: calc(100% - #{$column-header-height} - #{$column-footer-height});
+    max-height: calc(#{$column-height} - #{$column-header-height} - #{$column-footer-height});
     overflow-y: auto;
     &::-webkit-scrollbar {
       -webkit-appearance: none;
