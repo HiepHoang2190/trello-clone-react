@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Container, Draggable } from 'react-smooth-dnd'
 import { Dropdown, Form, Button } from 'react-bootstrap/'
+import { cloneDeep } from 'lodash'
 import './Column.scss'
 
 import Card from 'components/Card/Card'
@@ -33,9 +34,25 @@ export default function Column(props) {
   const handleCoumnTitleChange = useCallback((e) => {
     setColumnTitle(e.target.value)
   })
+
+  const newCardTextareaRef = useRef(null)
+
+  const [newCardTitle, setNewCardTitle] = useState('')
+  const onNewCardTitleChange = (e) => (
+    setNewCardTitle(e.target.value)
+  )
+
+
   useEffect(() => {
     setColumnTitle(column.title)
   }, [column.title])
+
+  useEffect(() => {
+    if (newCardTextareaRef && newCardTextareaRef.current) {
+      newCardTextareaRef.current.focus()
+      newCardTextareaRef.current.select()
+    }
+  }, [openNewCardForm])
 
   const onConfirmModalAction = (type) => {
     // console.log(type)
@@ -53,6 +70,29 @@ export default function Column(props) {
     onUpdateColumn(newColumn)
   }
 
+  const addNewCard = () => {
+    if (!newCardTitle) {
+      newCardTextareaRef.current.focus()
+      return
+    }
+    const newCardToAdd = {
+      id: Math.random().toString(36).substr(2, 5), // 5 ranom characters, will remove when we implement code API
+      boardId: column.boardId,
+      columnId: column.id,
+      title: newCardTitle.trim(),
+      cover: null
+    }
+
+    // let newColumn = { ...column }
+    let newColumn = cloneDeep(column)
+
+    newColumn.cards.push(newCardToAdd)
+    newColumn.cardOrder.push(newCardToAdd.id)
+    onUpdateColumn(newColumn)
+    setNewCardTitle('')
+    toggleOpenNewCardForm()
+  }
+
   return (
     <div className="column">
       <header className="column-drag-handle">
@@ -68,7 +108,6 @@ export default function Column(props) {
             onClick={selectAllInlineText}
             onMouseDown={e => e.preventDefault()}
             spellCheck="false"
-          // onKeyDown={event => (event.key === 'Enter') && addNewColumn()}
           />
         </div>
         <div className="column-dropdown-actions">
@@ -124,20 +163,24 @@ export default function Column(props) {
               size="sm"
               as="textarea"
               rows="3"
-              placeholder="Enter column title..."
+              placeholder="Enter a title for this card..."
               className="textarea-enter-new-card"
-            // ref={newColumnInputRef}
-            // value={newColumnTitle}
-            // onChange={onNewColumnTitleChange}
-            // onKeyDown={event => (event.key === 'Enter') && addNewColumn()}
+              ref={newCardTextareaRef}
+              value={newCardTitle}
+              onChange={onNewCardTitleChange}
+              onKeyDown={event => (event.key === 'Enter') && addNewCard()}
             />
-            <Button variant="success" size="sm" >Add column</Button>
-            <span className="cancel-icon" onClick={toggleOpenNewCardForm}><i className="fa fa-trash icon"></i></span>
           </div>
         )}
 
       </div>
       <footer>
+        {openNewCardForm && (
+          <div className="add-new-card-actions">
+            <Button variant="success" size="sm" onClick={addNewCard} >Add card</Button>
+            <span className="cancel-icon" onClick={toggleOpenNewCardForm}><i className="fa fa-trash icon"></i></span>
+          </div>
+        )}
         {!openNewCardForm && (
           <div className="footer-actions" onClick={toggleOpenNewCardForm}>
             <i className="fa fa-plus icon"> Add another card</i>

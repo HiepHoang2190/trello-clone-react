@@ -21,6 +21,7 @@ export default function BoardContent() {
   const onNewColumnTitleChange = (e) => (
     setNewColumnTitle(e.target.value)
   )
+
   useEffect(() => {
     const boardFromDB = initialData.boards.find(board => board.id === 'board-1')
     if (boardFromDB) {
@@ -130,6 +131,7 @@ export default function BoardContent() {
       newColumns.splice(columnIndexToUpdate, 1)
     } else {
       // update column info
+
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate)
     }
 
@@ -142,6 +144,7 @@ export default function BoardContent() {
 
     // console.log(columnIndexToUpdate)
   }
+
   return (
     <div className="board-content">
       <Container
@@ -159,7 +162,8 @@ export default function BoardContent() {
         {columns.map((column, index) => {
           return (
             <Draggable key={index}>
-              <Column column={column} onCardDrop={onCardDrop} onUpdateColumn={onUpdateColumn} />
+              <Column column={column} onCardDrop={onCardDrop} onUpdateColumn={onUpdateColumn}
+              />
             </Draggable>
           )
         })}
