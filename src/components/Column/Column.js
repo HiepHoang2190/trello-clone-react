@@ -62,18 +62,28 @@ export default function Column(props) {
 
     if (type === MODAL_ACTION_CONFIRM) {
       const newColumn = { ...column, _destroy: true }
-      onUpdateColumnState(newColumn)
+
+       // Call api update column
+       updateColumn(newColumn._id, newColumn).then(updatedColumn => {
+        onUpdateColumnState(updatedColumn)
+      })
+      // onUpdateColumnState(newColumn)
     }
     toggleShowConfirmModal()
   }
   //  Update column title
   const handleCoumnTitleBlur = () => {
-    console.log(columnTitle)
-    const newColumn = { ...column, title: columnTitle }
-    // Call api update column
-    updateColumn(newColumn._id, newColumn).then(updatedColumn => {
-      onUpdateColumnState(updatedColumn)
-    })
+    // console.log(column.title)
+    // console.log(columnTitle)
+    if (columnTitle !== column.title) {
+      const newColumn = { ...column, title: columnTitle }
+      // Call api update column
+      updateColumn(newColumn._id, newColumn).then(updatedColumn => {
+        updateColumn.cards = newColumn.cards
+        onUpdateColumnState(updatedColumn)
+      })
+    }
+
 
   }
 
