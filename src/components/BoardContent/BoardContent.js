@@ -2,15 +2,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Container, Draggable } from 'react-smooth-dnd'
 import { Container as BootstrapContainer, Row, Col, Form, Button } from 'react-bootstrap'
-import { isEmpty } from 'lodash'
+import { isEmpty, cloneDeep } from 'lodash'
 
 import './BoardContent.scss'
 
 import Column from 'components/Column/Column'
 import { mapOrder } from 'utilities/sorts'
 import { applyDrag } from 'utilities/dragDrop'
-import { fetchBoardDetails } from 'actions/ApiCall'
-import { createNewColumn } from 'actions/ApiCall'
+import { fetchBoardDetails, createNewColumn, updateBoard, updateColumn, updateCard } from 'actions/ApiCall'
+
 
 export default function BoardContent() {
   const [board, setBoard] = useState({})
@@ -26,7 +26,7 @@ export default function BoardContent() {
 
   useEffect(() => {
 
-    const boardId = '62dcbe7f8b43f51480e2a73a'
+    const boardId = '62e0bb54abdfb1e1ca3df136'
     fetchBoardDetails(boardId).then(board => {
       // eslint-disable-next-line no-console
       console.log(board)
@@ -65,9 +65,9 @@ export default function BoardContent() {
   const onColumnDrop = (dropResult) => {
     // console.log(dropResult)
     let newColumns = [...columns]
-    let newBoard = { ...board }
     newColumns = applyDrag(newColumns, dropResult)
 
+    let newBoard = { ...board }
     newBoard.columnOrder = newColumns.map(c => c._id)
     newBoard.columns = newColumns
     // console.log(newBoard)
@@ -75,6 +75,13 @@ export default function BoardContent() {
     // console.log(columns)
     setColumns(newColumns)
     setBoard(newBoard)
+    // Call Api update columnOrder in board details.
+    updateBoard(newBoard._id, newBoard).catch(error => {
+      console.log(error)
+      setColumns(columns)
+      setBoard(board)
+    })
+
     // sau khi cập nhật column thì cần cập nhật columnOrder ở board
 
   }
@@ -87,12 +94,42 @@ export default function BoardContent() {
 
       let newColumns = [...columns]
       let currentColumn = newColumns.find(c => c._id === columnId)
-      console.log(currentColumn)
+      // console.log(currentColumn)
 
       currentColumn.cards = applyDrag(currentColumn.cards, dropResult)
       currentColumn.cardOrder = currentColumn.cards.map(i => i._id)
-      console.log(newColumns)
+
+      // console.log(dropResult)
+      // console.log('-------------')
       setColumns(newColumns)
+      if (dropResult.removedIndex !== null && dropResult.addedIndex !== null) {
+        /**
+         * Action: Move card inside its column
+         * 1 - Call api update cardOrder in current column
+         */
+        updateColumn(currentColumn._id, currentColumn).catch(() => {
+          setColumns(columns)
+        })
+      } else {
+        /**
+         * Action: Move card between two columns
+         */
+        //  1 - Call api update cardOrder in current column
+        updateColumn(currentColumn._id, currentColumn).catch(() => {
+          setColumns(columns)
+        })
+        if (dropResult.addedIndex !== null) {
+          let currentCard = cloneDeep(dropResult.payload)
+          currentCard.columnId = currentColumn._id
+          console.log(dropResult)
+          console.log(currentCard)
+          console.log('-------------')
+          // 2 - Call api update columnId in current card
+          updateCard(currentCard._id, currentCard)
+        }
+
+      }
+
 
     }
   }
